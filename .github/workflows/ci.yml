@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e .
+      - run: python -m unittest discover -s tests -v
+      - run: python -m compileall -q src
+      - run: python tools/benchmark.py --attempts 10000
+
+  linux-build:
+    name: Linux C and kernel build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cppcheck linux-headers-generic
+      - name: Build userspace tools
+        run: make -C userspace
+      - name: Static analysis
+        run: cppcheck --enable=warning,performance,portability --error-exitcode=1 --std=c11 userspace/*.c
+      - name: Build kernel module
+        shell: bash
+        run: |
+          KDIR=$(find /usr/src -maxdepth 1 -type d -name 'linux-headers-*-generic' | sort -V | tail -1)
+          test -n "$KDIR"
+          make -C "$KDIR" M="$GITHUB_WORKSPACE/kernel" modules
+

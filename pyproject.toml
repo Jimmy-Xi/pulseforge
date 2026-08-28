@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pulseforge-sim"
+version = "0.1.0"
+description = "Deterministic digital twin for a fault-injectable Linux telemetry device"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Jimmy-Xi" }]
+keywords = ["linux-driver", "digital-twin", "fault-injection", "telemetry", "embedded"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: System :: Hardware :: Hardware Drivers",
+]
+
+[project.scripts]
+pulseforge = "pulseforge_sim.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
