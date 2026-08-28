@@ -48,5 +48,6 @@ Wall-clock timestamps make byte-for-byte replay impossible. `device_time_ns = se
 - Ring transport uses `read`, not `mmap`.
 - The driver is compiled in CI but hardware-free runtime tests currently require a Linux VM or host that permits loading custom modules.
 
-Each boundary maps directly to a roadmap item instead of being hidden as an implementation accident.
+The kernel module is dual-licensed under `GPL-2.0-only OR MIT` because its high-resolution timer path uses GPL-only exported kernel symbols. Userspace components remain MIT licensed.
 
+Each boundary maps directly to a roadmap item instead of being hidden as an implementation accident.

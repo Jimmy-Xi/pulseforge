@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: GPL-2.0-only OR MIT
 /*
  * PulseForge: fault-injectable virtual telemetry device.
  *
@@ -363,5 +363,5 @@ module_exit(pf_exit);
 
 MODULE_AUTHOR("Jimmy-Xi");
 MODULE_DESCRIPTION("Deterministic fault-injectable virtual telemetry device");
-MODULE_LICENSE("MIT");
+MODULE_LICENSE("Dual MIT/GPL");
 MODULE_VERSION("0.1.0");
