@@ -52,6 +52,17 @@ class Sample:
             self.status,
         )
 
+    def computed_crc(self) -> int:
+        return binascii.crc32(self.payload()) & 0xFFFFFFFF
+
+    def verify_crc(self) -> None:
+        expected = self.computed_crc()
+        if self.crc32 != expected:
+            raise StreamCorruptionError(
+                f"CRC mismatch at sequence {self.sequence}: "
+                f"got 0x{self.crc32:08x}, expected 0x{expected:08x}"
+            )
+
     def with_crc(self) -> "Sample":
         return Sample(
             self.device_time_ns,
@@ -59,7 +70,7 @@ class Sample:
             self.signal_milli,
             self.temperature_milli,
             self.status,
-            binascii.crc32(self.payload()) & 0xFFFFFFFF,
+            self.computed_crc(),
         )
 
     def pack(self) -> bytes:
@@ -90,12 +101,8 @@ class Sample:
         if len(frame) != _FRAME.size:
             raise ValueError(f"expected {_FRAME.size} bytes, got {len(frame)}")
         sample = cls(*_FRAME.unpack(frame))
-        expected = binascii.crc32(sample.payload()) & 0xFFFFFFFF
-        if verify and sample.crc32 != expected:
-            raise StreamCorruptionError(
-                f"CRC mismatch at sequence {sample.sequence}: "
-                f"got 0x{sample.crc32:08x}, expected 0x{expected:08x}"
-            )
+        if verify:
+            sample.verify_crc()
         return sample
 
 
@@ -110,4 +117,3 @@ def fingerprint(samples: Iterable[Sample]) -> str:
     for sample in samples:
         digest.update(sample.pack())
     return digest.hexdigest()
-

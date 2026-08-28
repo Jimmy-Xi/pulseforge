@@ -22,6 +22,11 @@ class ProtocolTests(unittest.TestCase):
         sample = Sample(1, 2, 3, 4, 5).with_crc()
         self.assertEqual(sample.crc32, binascii.crc32(sample.payload()) & 0xFFFFFFFF)
 
+    def test_explicit_zero_crc_is_not_silently_repaired(self) -> None:
+        sample = Sample(1, 2, 3, 4, 5, crc32=0)
+        with self.assertRaises(StreamCorruptionError):
+            sample.verify_crc()
+
     def test_fingerprint_depends_on_order(self) -> None:
         first = Sample(0, 0, 1, 2, 0)
         second = Sample(1, 1, 2, 3, 0)
@@ -30,4 +35,3 @@ class ProtocolTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
