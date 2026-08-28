@@ -77,7 +77,7 @@ def analyze(args: argparse.Namespace) -> int:
                     status=record["status"],
                     crc32=record["crc32"],
                 )
-                Sample.unpack(sample.pack())
+                sample.verify_crc()
             except (KeyError, TypeError, ValueError) as exc:
                 raise SystemExit(f"invalid record on line {line_number}: {exc}") from exc
             samples.append(sample)
@@ -129,4 +129,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
