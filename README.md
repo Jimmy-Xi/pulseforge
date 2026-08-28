@@ -152,5 +152,4 @@ Ready-to-adapt Chinese and English bullet points, interview prompts and metric g
 
 ## License
 
-MIT. This project is an educational virtual device; it is not a production safety or medical sensor.
-
+The Python package, userspace tools and documentation are MIT licensed. The kernel module is dual-licensed under `GPL-2.0-only OR MIT` and declares `Dual MIT/GPL`, as it uses GPL-only Linux timer APIs. This project is an educational virtual device; it is not a production safety or medical sensor.
